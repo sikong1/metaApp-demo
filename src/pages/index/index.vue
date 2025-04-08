@@ -56,7 +56,7 @@ export default {
       return this.list.filter((_, index) => index % 2 === 1)
     }
   },
-  async mounted() {
+  created() {
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const el = entry.target
@@ -76,6 +76,8 @@ export default {
         }
       })
     })
+  },
+  async mounted() {
     await this.loadData()
   },
   methods: {
