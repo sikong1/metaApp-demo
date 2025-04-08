@@ -57,10 +57,6 @@ export default {
     }
   },
   async mounted() {
-    wx.config({ debug: false, jsApiList: [] })
-    wx.ready(function () {
-      document.getElementById("video").play()
-    })
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const el = entry.target
