@@ -9,16 +9,8 @@
   >
     <!-- 瀑布流两列容器 -->
     <view class="waterfall">
-      <!-- 骨架屏 -->
-      <view v-if="false" class="column">
-        <view
-          class="sekeleton"
-          v-for="(item, index) in sekeletonArr"
-          :key="item"
-        />
-      </view>
       <!-- 左列 -->
-      <view v-else class="column">
+      <view class="column">
         <item-block
           v-for="item in leftList"
           :key="item.id"
@@ -27,14 +19,7 @@
         />
       </view>
       <!-- 右列 -->
-      <view v-if="false" class="column">
-        <view
-          class="sekeleton"
-          v-for="(item, index) in sekeletonArr"
-          :key="item"
-        />
-      </view>
-      <view v-else class="column">
+      <view class="column">
         <item-block
           v-for="item in rightList"
           :key="item.id"
@@ -65,25 +50,20 @@ export default {
   computed: {
     // 分割为左右两列
     leftList() {
-      console.log("this.list", this.list)
       return this.list.filter((_, index) => index % 2 === 0)
     },
     rightList() {
       return this.list.filter((_, index) => index % 2 === 1)
-    },
-
-    // 计算高度，需要多少骨架屏，一个骨架屏190px
-    sekeletonArr() {
-      // 视口高度
-      const vh = uni.getSystemInfoSync().windowHeight
-      // 骨架屏高度
-      const skeletonHeight = 190
-      // 需要多少个骨架屏, 数组
-      const length = Math.floor(vh / skeletonHeight)
-      return new Array(length)
     }
   },
   async mounted() {
+    document.addEventListener(
+      "WeixinJSBridgeReady",
+      function () {
+        document.getElementById("video").play()
+      },
+      false
+    )
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const el = entry.target
@@ -96,9 +76,7 @@ export default {
         }
       })
     })
-    this.isSekeleton = true
     await this.loadData()
-    this.isSekeleton = false
   },
   methods: {
     async loadData() {
@@ -129,13 +107,11 @@ export default {
     },
 
     async onRefresh() {
-      this.isSekeleton = true
       this.isRefreshing = true
       this.page = 1
       this.list = []
       console.log("hhhh")
       await this.loadData()
-      this.isSekeleton = false
       this.isRefreshing = false
     },
 
