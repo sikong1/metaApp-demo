@@ -57,13 +57,10 @@ export default {
     }
   },
   async mounted() {
-    document.addEventListener(
-      "WeixinJSBridgeReady",
-      function () {
-        document.getElementById("video").play()
-      },
-      false
-    )
+    wx.config({ debug: false, jsApiList: [] })
+    wx.ready(function () {
+      document.getElementById("video").play()
+    })
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const el = entry.target
