@@ -63,7 +63,7 @@ export default {
         // 获取el的id
         const video = el.querySelector("video")
         if (entry.isIntersecting) {
-          video.play()
+          // video.play()
           setTimeout(() => {
             video.play()
           },1000)
