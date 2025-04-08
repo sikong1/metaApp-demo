@@ -39,7 +39,10 @@ export default {
   components: { ItemBlock },
   data() {
     return {
-      list: [],
+       leftList: [], // 手动维护左列数据
+      rightList: [], // 手动维护右列数据
+       leftHeight: 0, // 左列总高度
+      rightHeight: 0, // 右列总高度
       page: 1,
       limit: 10,
       isRefreshing: false,
@@ -47,15 +50,15 @@ export default {
       isMore: false
     }
   },
-  computed: {
-    // 分割为左右两列
-    leftList() {
-      return this.list.filter((_, index) => index % 2 === 0)
-    },
-    rightList() {
-      return this.list.filter((_, index) => index % 2 === 1)
-    }
-  },
+  // computed: {
+  //   // 分割为左右两列
+  //   leftList() {
+  //     return this.list.filter((_, index) => index % 2 === 0)
+  //   },
+  //   rightList() {
+  //     return this.list.filter((_, index) => index % 2 === 1)
+  //   }
+  // },
   created() {
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -63,14 +66,7 @@ export default {
         // 获取el的id
         const video = el.querySelector("video")
         if (entry.isIntersecting) {
-          if (window.WeixinJSBridge) {
-            WeixinJSBridge.invoke("getNetworkType", {}, function () {
-              const video1 = el.querySelector("video")
-              video1?.play()
-            })
-          } else {
-            video.play()
-          }
+          video.play()
         } else {
           video.pause()
         }
@@ -90,16 +86,20 @@ export default {
             limit: this.limit
           })
 
-          if (this.page === 1) {
-            this.list = newData.list
-            // document.querySelectorAll(".video").forEach((video) => {
-            //   this.observer.observe(video)
-            // })
-          } else {
-            this.list = [...this.list, ...newData.list]
-          }
-          // this.$nextTick(() => {
-          // })
+           // 动态分配元素到较矮的列
+          newData.list.forEach(item => {
+            // 假设mock数据中每个item包含预估高度height属性
+            console.log(this.leftHeight , this.rightHeight ,"this.leftHeight <= this.rightHeight");
+            const height = item.isImg ? 185 : 400
+            if (this.leftHeight <= this.rightHeight) {
+              this.leftList.push(item)
+              this.leftHeight += height // 使用实际或预估高度
+            } else {
+              this.rightList.push(item)
+              this.rightHeight += height
+            }
+          })
+
           resolve()
         }, 2000)
       })
@@ -113,8 +113,11 @@ export default {
     async onRefresh() {
       this.isRefreshing = true
       this.page = 1
-      this.list = []
-      console.log("hhhh")
+      // 清空数据和高度记录
+      this.leftList = []
+      this.rightList = []
+      this.leftHeight = 0
+      this.rightHeight = 0
       await this.loadData()
       this.isRefreshing = false
     },
