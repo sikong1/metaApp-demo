@@ -8,7 +8,7 @@
           :id="`video-${item.id}`"
           :src="item.video"
           :controls="false"
-          :muted="muted"
+          loop autoPlay muted playsInline
           class="video-element"
           @play="handlePlay"
           @pause="handlePause"
