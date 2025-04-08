@@ -9,24 +9,37 @@
   >
     <!-- 瀑布流两列容器 -->
     <view class="waterfall">
+      <!-- 骨架屏 -->
+      <view v-if="false" class="column">
+        <view
+          class="sekeleton"
+          v-for="(item, index) in sekeletonArr"
+          :key="item"
+        />
+      </view>
       <!-- 左列 -->
-      <view class="column">
+      <view v-else class="column">
         <item-block
           v-for="item in leftList"
           :key="item.id"
           :item="item"
           :observer="observer"
-          :active-id="arctiveVideoIds"
         />
       </view>
       <!-- 右列 -->
-      <view class="column">
+      <view v-if="false" class="column">
+        <view
+          class="sekeleton"
+          v-for="(item, index) in sekeletonArr"
+          :key="item"
+        />
+      </view>
+      <view v-else class="column">
         <item-block
           v-for="item in rightList"
           :key="item.id"
           :item="item"
           :observer="observer"
-          :active-id="arctiveVideoIds"
         />
       </view>
     </view>
@@ -46,8 +59,7 @@ export default {
       limit: 10,
       isRefreshing: false,
       observer: null,
-      isMore: false,
-      arctiveVideoIds: [] // 当前播放的视频ID
+      isMore: false
     }
   },
   computed: {
@@ -58,6 +70,17 @@ export default {
     },
     rightList() {
       return this.list.filter((_, index) => index % 2 === 1)
+    },
+
+    // 计算高度，需要多少骨架屏，一个骨架屏190px
+    sekeletonArr() {
+      // 视口高度
+      const vh = uni.getSystemInfoSync().windowHeight
+      // 骨架屏高度
+      const skeletonHeight = 190
+      // 需要多少个骨架屏, 数组
+      const length = Math.floor(vh / skeletonHeight)
+      return new Array(length)
     }
   },
   async mounted() {
@@ -73,7 +96,9 @@ export default {
         }
       })
     })
+    this.isSekeleton = true
     await this.loadData()
+    this.isSekeleton = false
   },
   methods: {
     async loadData() {
@@ -87,36 +112,16 @@ export default {
 
           if (this.page === 1) {
             this.list = newData.list
-            document.querySelectorAll('.video').forEach((video) => {
+            document.querySelectorAll(".video").forEach((video) => {
               this.observer.observe(video)
             })
           } else {
             this.list = [...this.list, ...newData.list]
           }
-          // this.$nextTick(() => {
-          //   this.initVideos()
-          // })
           resolve()
         }, 2000)
       })
     },
-
-    // async initVideos() {
-    //   const videos = Array.from(document.querySelectorAll("video"))
-    //   console.log(videos, "this.observer")
-
-    //   videos.forEach((video) => {
-    //     console.log(video.node, "video.node")
-
-    //     this.observer.relativeToViewport().observe(video.node, (res) => {
-    //       console.log("res", res)
-    //       res.intersectionRaatio > 0 ? video.play() : video.pause()
-    //     })
-    //     // this.observer.relativeToViewport().observer(video, (res) => {
-    //     //   res.intersectionRaatio > 0 ? video.play() : video.pause()
-    //     // })
-    //   })
-    // },
 
     async onReachBottom() {
       this.page++
@@ -124,13 +129,14 @@ export default {
     },
 
     async onRefresh() {
+      this.isSekeleton = true
       this.isRefreshing = true
       this.page = 1
       this.list = []
       console.log("hhhh")
       await this.loadData()
+      this.isSekeleton = false
       this.isRefreshing = false
-      console.log("111", this.isRefreshing)
     },
 
     async loadMore() {
@@ -157,6 +163,26 @@ export default {
   display: flex;
   padding: 10px;
   gap: 10px;
+}
+
+.sekeleton {
+  width: 190px;
+  height: 190px;
+  white-space: pre !important;
+
+  background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 37%, #f2f2f2 63%);
+  animation: loading 1.4s ease-in-out infinite;
+  background-size: 400% 100% !important;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 100% 50%;
+  }
+
+  to {
+    background-position: 0 50%;
+  }
 }
 
 .column {

@@ -22,6 +22,9 @@
     <view class="footer">
       <text>{{ item.title }}</text>
     </view>
+    <view class="typeName">
+      <text>{{ item.typeName }}</text>
+    </view>
 
     <!-- 作者信息 -->
     <view class="author">
@@ -130,11 +133,18 @@ export default {
   justify-content: space-between;
 }
 
+.typeName {
+  padding: 0 8px;
+  color: #858484;
+  font-size: 12px;
+}
+
+
 .like {
   display: flex;
   align-items: center;
   gap: 4px;
-  color: #ccc;
+  color: #858484;
 }
 
 .video-wrapper {

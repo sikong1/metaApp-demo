@@ -15,5 +15,8 @@
 </script>
 
 <style>
-    /*每个页面公共css */
+/* 隐藏scroll-view滚动条 */
+::-webkit-scrollbar {
+  display: none;
+}
 </style>
