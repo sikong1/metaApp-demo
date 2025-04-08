@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "builds": [{ "src": "dist/build/h5/​**​", "use": "@vercel/static" }],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://cervel-node-git-main-sikong1s-projects.vercel.app/$1"
+    }
+  ]
+}
