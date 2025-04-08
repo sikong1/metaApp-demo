@@ -101,7 +101,7 @@ export default {
           })
 
           resolve()
-        }, 2000)
+        }, 600)
       })
     },
 
