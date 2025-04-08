@@ -63,9 +63,7 @@ export default {
         // 获取el的id
         const video = el.querySelector("video")
         if (entry.isIntersecting) {
-          setTimeout(() => {
-            video.play()
-          }, 1000)
+          video.play()
         } else {
           video.pause()
         }
@@ -85,12 +83,14 @@ export default {
 
           if (this.page === 1) {
             this.list = newData.list
-            document.querySelectorAll(".video").forEach((video) => {
-              this.observer.observe(video)
-            })
+            // document.querySelectorAll(".video").forEach((video) => {
+            //   this.observer.observe(video)
+            // })
           } else {
             this.list = [...this.list, ...newData.list]
           }
+          // this.$nextTick(() => {
+          // })
           resolve()
         }, 2000)
       })
