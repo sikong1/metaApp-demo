@@ -63,10 +63,14 @@ export default {
         // 获取el的id
         const video = el.querySelector("video")
         if (entry.isIntersecting) {
-          // video.play()
-          setTimeout(() => {
+          if (window.WeixinJSBridge) {
+            WeixinJSBridge.invoke("getNetworkType", {}, function () {
+              const video1 = el.querySelector("video")
+              video1?.play()
+            })
+          } else {
             video.play()
-          },1000)
+          }
         } else {
           video.pause()
         }
