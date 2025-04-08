@@ -1,6 +1,4 @@
 {
-  "version": 2,
-  "builds": [{ "src": "dist/build/h5/​**​", "use": "@vercel/static" }],
   "routes": [
     {
       "src": "/api/(.*)",
